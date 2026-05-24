@@ -17,9 +17,19 @@
   </p>
 
   <p>
+    <a href="https://lapor-warga-mocha.vercel.app/" target="_blank">
+      <img src="https://img.shields.io/badge/🌐_Live_Demo-lapor--warga--mocha.vercel.app-00C7B7?style=for-the-badge&logo=vercel&logoColor=white" />
+    </a>
+  </p>
+
+  <p>
     <img src="https://img.shields.io/github/actions/workflow/status/ganddtn40/Lapor-Warga/deploy.yml?branch=main&label=Deploy&style=flat-square" />
     <img src="https://img.shields.io/github/actions/workflow/status/ganddtn40/Lapor-Warga/security.yml?branch=main&label=Security&style=flat-square" />
     <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" />
+  </p>
+
+  <p>
+    <strong>🌐 <a href="https://lapor-warga-mocha.vercel.app/">https://lapor-warga-mocha.vercel.app/</a></strong>
   </p>
 </div>
 
@@ -424,6 +434,9 @@ MIT License — bebas digunakan dan dikembangkan.
   <p>Built with ❤️ for Indonesia · Powered by Google Technology Stack</p>
   <p>
     <strong>Google JuaraVibeCoding 2026</strong>
+  </p>
+  <p>
+    <a href="https://lapor-warga-mocha.vercel.app/">🌐 Live Demo</a>
   </p>
   <p>
     <img src="https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black" />
