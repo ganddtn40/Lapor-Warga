@@ -31,7 +31,7 @@
 
 Laporan diproses secara otomatis dengan **Gemini AI** untuk klasifikasi kategori & prioritas, disimpan di **Firebase Firestore** + **Realtime Database**, dikelola oleh petugas melalui dashboard enterprise, dan divisualisasikan secara geografis melalui peta interaktif.
 
-> 🏆 **Diikutsertakan dalam Google JuaraVibeCoding 2025** — membangun solusi nyata dengan teknologi Google untuk masalah nyata masyarakat Indonesia.
+> 🏆 **Diikutsertakan dalam Google JuaraVibeCoding 2026** — membangun solusi nyata dengan teknologi Google untuk masalah nyata masyarakat Indonesia.
 
 ---
 
@@ -423,7 +423,7 @@ MIT License — bebas digunakan dan dikembangkan.
 <div align="center">
   <p>Built with ❤️ for Indonesia · Powered by Google Technology Stack</p>
   <p>
-    <strong>Google JuaraVibeCoding 2025</strong>
+    <strong>Google JuaraVibeCoding 2026</strong>
   </p>
   <p>
     <img src="https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black" />
