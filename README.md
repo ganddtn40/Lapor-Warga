@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./app/icon.png" alt="LaporWarga Logo" width="96" height="96" />
+  <img src="./app/icon.png" alt="LaporWarga Logo" width="150" height="150" />
 
   <h1>🏙️ LaporWarga</h1>
   <p><strong>Platform Pelaporan Warga Cerdas · Smart City Enterprise System</strong></p>
