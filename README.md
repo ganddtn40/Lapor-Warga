@@ -410,7 +410,7 @@ Warga mengisi form laporan
 
 ## 🤝 Kontribusi
 
-Proyek ini dibangun untuk **Google JuaraVibeCoding 2025**. Kontribusi terbuka setelah lomba selesai.
+Proyek ini dibangun untuk **Google JuaraVibeCoding 2026**. Kontribusi terbuka setelah lomba selesai.
 
 ---
 
