@@ -13,7 +13,7 @@
   </p>
 
   <p>
-    <img src="https://img.shields.io/badge/🏆_Lomba-Google_JuaraVibeCoding_2025-EA4335?style=for-the-badge&logo=google" />
+    <img src="https://img.shields.io/badge/🏆_Lomba-Google_JuaraVibeCoding_2026-EA4335?style=for-the-badge&logo=google" />
   </p>
 
   <p>
