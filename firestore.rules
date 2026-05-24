@@ -1,0 +1,116 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) 
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data
+        : null;
+    }
+
+    function getUserRole() {
+      let data = getUserData();
+      return data != null ? data.role : 'citizen';
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+
+    function isOfficer() {
+      return isAuthenticated() && getUserRole() == 'officer';
+    }
+
+    function isStaff() {
+      return isAdmin() || isOfficer();
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // ── /users/{userId} ──────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Staff can read all users (for management); owners can read themselves
+      allow read: if isStaff() || isOwner(userId);
+      // Anyone authenticated can create their own profile (first-time sign-in)
+      allow create: if isOwner(userId);
+      // Owners can update their own profile; admins can update any
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── /reports/{reportId} ──────────────────────────────────────────────────
+    match /reports/{reportId} {
+      // All authenticated users can read reports (needed for map, lists, detail)
+      allow read: if isAuthenticated();
+
+      // Citizens create reports — must own the userId field
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid;
+
+      // Staff can update any report (status changes, assignments)
+      // Citizens can only update their own report while it is still 'Menunggu'
+      allow update: if isStaff()
+        || (isOwner(resource.data.userId) && resource.data.status == 'Menunggu');
+
+      allow delete: if isAdmin();
+
+      // ── /reports/{reportId}/chats/{chatId} ──────────────────────────────
+      match /chats/{chatId} {
+        // Readable by the report owner OR any staff member
+        allow read: if isStaff()
+          || (exists(/databases/$(database)/documents/reports/$(reportId)) 
+              && isOwner(get(/databases/$(database)/documents/reports/$(reportId)).data.userId));
+
+        // Writable by the report owner OR any staff member (so both sides can chat)
+        allow create: if isAuthenticated() && (
+          isStaff()
+          || (exists(/databases/$(database)/documents/reports/$(reportId))
+              && isOwner(get(/databases/$(database)/documents/reports/$(reportId)).data.userId))
+        );
+
+        // Mark-as-seen updates: allow sender or recipient
+        allow update: if isAuthenticated() && (
+          isAdmin()
+          || (exists(/databases/$(database)/documents/reports/$(reportId))
+              && isOwner(get(/databases/$(database)/documents/reports/$(reportId)).data.userId))
+          || isStaff()
+        );
+
+        allow delete: if isAdmin();
+      }
+    }
+
+    // ── /notifications/{notifId} ────────────────────────────────────────────
+    match /notifications/{notifId} {
+      // Owners can read their own notifications
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+
+      // ANY authenticated user can create notifications (citizen → staff chat, status changes)
+      // The chat system creates notifications for both directions
+      allow create: if isAuthenticated();
+
+      // Owners can update (mark as read) their own notifications
+      allow update: if isAuthenticated() && isOwner(resource.data.userId);
+
+      // Owners or admins can delete notifications
+      allow delete: if isAuthenticated() && (isOwner(resource.data.userId) || isAdmin());
+    }
+
+    // ── /settings/{userId} ──────────────────────────────────────────────────
+    match /settings/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    // ── Default deny ─────────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

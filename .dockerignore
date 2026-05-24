@@ -1,0 +1,37 @@
+# ── .dockerignore ─────────────────────────────────────────
+# Pastikan secret dan file tidak perlu TIDAK masuk ke container
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Dev tools & cache
+node_modules
+.next
+.git
+.gitignore
+
+# Docs
+README.md
+CLOUDINARY_SETUP.md
+*.md
+
+# IDE
+.vscode
+.idea
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test & coverage
+coverage
+__tests__
+*.test.*
+*.spec.*
+
+# Firebase local
+.firebase
+firebase-debug.log

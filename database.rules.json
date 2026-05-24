@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "reports": {
+      "$reportId": {
+        "chats": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    }
+  }
+}

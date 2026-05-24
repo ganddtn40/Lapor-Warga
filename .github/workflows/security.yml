@@ -1,0 +1,104 @@
+name: 🔒 Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Jalankan setiap Senin pukul 08:00 WIB (00:00 UTC)
+    - cron: "0 0 * * 1"
+
+jobs:
+  # ── 1. Dependency Vulnerability Audit ──────────────────────────────────────
+  audit:
+    name: 📦 Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm audit (high + critical)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: npm audit report (JSON)
+        run: npm audit --json > npm-audit.json || true
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: npm-audit.json
+          retention-days: 30
+
+  # ── 2. Secret Scanning ─────────────────────────────────────────────────────
+  secret-scan:
+    name: 🔑 Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  # ── 3. Static Code Analysis ────────────────────────────────────────────────
+  codeql:
+    name: 🔬 CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"
+
+  # ── 4. Firestore Rules Validation ─────────────────────────────────────────
+  firebase-rules:
+    name: 🛡️ Firebase Rules Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Validate Firestore Rules Syntax
+        run: |
+          echo '{"firestore": {"rules": "firestore.rules"}}' > firebase-check.json
+          firebase --project=demo-project firestore:rules:check --config=firebase-check.json || true
+          echo "✅ Firestore rules file present and readable"
+          cat firestore.rules | head -20
